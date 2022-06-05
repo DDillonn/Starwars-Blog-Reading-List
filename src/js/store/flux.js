@@ -1,45 +1,55 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
-		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+	  store: {
+		apiUrl: "https://swapi.dev/api/",
+		characters: [],
+		planets: [],
+		starships: [],
+		favorites: [],
+	  },
+  
+	  actions: {
+		getCharacters: () => {
+		  const people = getStore().apiUrl + "people/";
+		  fetch(people)
+			.then((resp) => resp.json())
+			.then((data) => {
+			  setStore({ characters: data.results });
+			})
+			.then(() => console.log(getStore().characters));
 		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
+		getPlanets: () => {
+		  const planets = getStore().apiUrl + "planets/";
+		  fetch(planets)
+			.then((resp) => resp.json())
+			.then((data) => {
+			  setStore({ planets: data.results });
+			})
+			.then(() => console.log(getStore().planets));
+		},
+		getStarships: () => {
+		  const starships = getStore().apiUrl + "starships/";
+		  fetch(starships)
+			.then((resp) => resp.json())
+			.then((data) => {
+			  setStore({ starships: data.results });
+			})
+			.then(() => console.log(getStore().starships));
+		},
+		getFavorites: (item) => {
+		  console.log(item);
+		  let myFavorites = getStore().favorites;
+		  let selected = myFavorites.find((element) => element === item);
+		  if (selected) {
+			myFavorites = myFavorites.filter((element) => item !== element);
+			setStore({ favorites: myFavorites });
+		  } else {
+			myFavorites = [...myFavorites, item];
+			setStore({ favorites: myFavorites });
+		  }
+		},
+	  },
 	};
-};
-
-export default getState;
+  };
+  
+  export default getState;
